@@ -71,12 +71,12 @@ def main():
 
         cap = cv2.VideoCapture(0)
         while True:
-            print("Reading image")
             ret, img = cap.read()
             if not ret:
                 print("Could not read the image")
                 exit(0)
             raw_img = img.copy()
+            outputImg = img.copy()
             resolution_x = img.shape[1]
             resolution_y = img.shape[0]
             try:
@@ -95,39 +95,48 @@ def main():
                 y = detected_face[1]
                 w = detected_face[2]
                 h = detected_face[3]
-            custom_face = raw_img.copy()[y:y+h, x:x+w]
-            custom_face = functions.preprocess_face(img=custom_face, target_size=(
-                input_shape_y, input_shape_x), enforce_detection=False, detector_backend='opencv')
+                custom_face = raw_img.copy()[y:y+h, x:x+w]
+                custom_face = functions.preprocess_face(img=custom_face, target_size=(
+                    input_shape_y, input_shape_x), enforce_detection=False, detector_backend='opencv')
 
-            if custom_face.shape[1:3] == input_shape:
-                if df.shape[0] > 0:  # if there are images to verify, apply face recognition
-                    img1_representation = model.predict(custom_face)[0, :]
+                if custom_face.shape[1:3] == input_shape:
+                    if df.shape[0] > 0:  # if there are images to verify, apply face recognition
+                        img1_representation = model.predict(custom_face)[0, :]
 
-                    def findDistance(row):
-                        distance_metric = row['distance_metric']
-                        img2_representation = row['embedding']
+                        def findDistance(row):
+                            distance_metric = row['distance_metric']
+                            img2_representation = row['embedding']
 
-                        distance = 1000  # initialize very large value
-                        if distance_metric == 'cosine':
-                            distance = dst.findCosineDistance(
-                                img1_representation, img2_representation)
-                        elif distance_metric == 'euclidean':
-                            distance = dst.findEuclideanDistance(
-                                img1_representation, img2_representation)
-                        elif distance_metric == 'euclidean_l2':
-                            distance = dst.findEuclideanDistance(dst.l2_normalize(
-                                img1_representation), dst.l2_normalize(img2_representation))
+                            distance = 1000  # initialize very large value
+                            if distance_metric == 'cosine':
+                                distance = dst.findCosineDistance(
+                                    img1_representation, img2_representation)
+                            elif distance_metric == 'euclidean':
+                                distance = dst.findEuclideanDistance(
+                                    img1_representation, img2_representation)
+                            elif distance_metric == 'euclidean_l2':
+                                distance = dst.findEuclideanDistance(dst.l2_normalize(
+                                    img1_representation), dst.l2_normalize(img2_representation))
 
-                        return distance
+                            return distance
 
-                    df['distance'] = df.apply(findDistance, axis=1)
-                    df = df.sort_values(by=["distance"])
+                        df['distance'] = df.apply(findDistance, axis=1)
+                        df = df.sort_values(by=["distance"])
 
-                    candidate = df.iloc[0]
-                    employee_name = candidate['employee']
-                    best_distance = candidate['distance']
+                        candidate = df.iloc[0]
+                        employee_name = candidate['employee']
+                        best_distance = candidate['distance']
 
-                    print(f"Name: {employee_name}")
+                        print(f"Name: {employee_name}")
+                        if best_distance < .2:
+                            
+                            cv2.rectangle(outputImg, (x, y), (x + w, y + h), (255, 0, 0), 5)
+                            pass
+                cv2.imshow("Image", outputImg)
+                press = cv2.waitKey(5)
+                if press == ord('q'):
+                    cv2.destroyAllWindows()
+                    exit(0)
     else:
         print("No employees found")
         exit(0)
