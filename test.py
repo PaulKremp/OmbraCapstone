@@ -142,11 +142,11 @@ def main():
                             
                         cv2.rectangle(outputImg, (x, y), (x + w, y + h), (255, 0, 0), 5)
                         pass
-                # cv2.imshow("Image", outputImg)
-                # press = cv2.waitKey(5)
-                # if press == ord('q'):
-                #     cv2.destroyAllWindows()
-                #     exit(0)
+                cv2.imshow("Image", outputImg)
+                #press = cv2.waitKey(5)
+                #if press == ord('q'):
+                #    cv2.destroyAllWindows()
+                #    exit(0)
             # print(f"FPS: {1/(time.time() - start_time)}")
     else:
         print("No employees found")
