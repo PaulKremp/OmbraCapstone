@@ -9,7 +9,7 @@ import pandas as pd
 import pickle
 import time
 
-print(DeepFace.find("./db/user/database/Mark/IMG_20200324_153500_517.jpg", db_path="./db", enforce_detection=False, model_name="DeepFace"))
+# print(DeepFace.find("./db/user/database/Mark/IMG_20200324_153500_517.jpg", db_path="./db", enforce_detection=False, model_name="DeepFace"))
 
 
 def createEmployees(db_path):
@@ -74,7 +74,7 @@ def main():
                 embeddings.append(embedding)
 
             
-            f = open("./db/embeddings_VGG_Face.pkl", "wb")
+            f = open("./db/embeddings_VGG_Face.pkl", "ab")
             pickle.dump(embeddings, f)
         df = pd.DataFrame(embeddings, columns = ['employee', 'embedding'])
         df['distance_metric'] = 'cosine'
@@ -138,10 +138,10 @@ def main():
                         best_distance = candidate['distance']
 
                         # print(f"Name: {employee_name}, Distance: {best_distance}")
-                        if best_distance < .2:
+                        #if best_distance < .2:
                             
-                            cv2.rectangle(outputImg, (x, y), (x + w, y + h), (255, 0, 0), 5)
-                            pass
+                        cv2.rectangle(outputImg, (x, y), (x + w, y + h), (255, 0, 0), 5)
+                        pass
                 # cv2.imshow("Image", outputImg)
                 # press = cv2.waitKey(5)
                 # if press == ord('q'):
