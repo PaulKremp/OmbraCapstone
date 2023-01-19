@@ -6,8 +6,10 @@ from tqdm import tqdm
 import cv2
 import os
 import pandas as pd
+import pickle
+import time
 
-# print(DeepFace.find("./db/user/database/Mark/IMG_20200324_153500_517.jpg", db_path="./db", enforce_detection=False, model_name="DeepFace"))
+print(DeepFace.find("./db/user/database/Mark/IMG_20200324_153500_517.jpg", db_path="./db", enforce_detection=False, model_name="DeepFace"))
 
 
 def createEmployees(db_path):
@@ -49,28 +51,37 @@ def main():
 
         # TODO: why don't you store those embeddings in a pickle file similar to find function?
 
-        embeddings = []
-        # for employee in employees:
-        for index in pbar:
-            employee = employees[index]
-            pbar.set_description("Finding embedding for %s" %
-                                 (employee.split("/")[-1]))
-            embedding = []
+        if os.path.exists("./db/embeddings_VGG_Face.pkl"):
+            f = open("./db/embeddings_VGG_Face.pkl", "rb")
+            embeddings = pickle.load(f)
+        else:
 
-            # preprocess_face returns single face. this is expected for source images in db.
-            img = functions.preprocess_face(img=employee, target_size=(
-                input_shape_y, input_shape_x), enforce_detection=False, detector_backend=detector_backend)
-            img_representation = model.predict(img)[0, :]
+            embeddings = []
+            # for employee in employees:
+            for index in pbar:
+                employee = employees[index]
+                pbar.set_description("Finding embedding for %s" %
+                                    (employee.split("/")[-1]))
+                embedding = []
 
-            embedding.append(employee)
-            embedding.append(img_representation)
-            embeddings.append(embedding)
+                # preprocess_face returns single face. this is expected for source images in db.
+                img = functions.preprocess_face(img=employee, target_size=(
+                    input_shape_y, input_shape_x), enforce_detection=False, detector_backend=detector_backend)
+                img_representation = model.predict(img)[0, :]
 
+                embedding.append(employee)
+                embedding.append(img_representation)
+                embeddings.append(embedding)
+
+            
+            f = open("./db/embeddings_VGG_Face.pkl", "wb")
+            pickle.dump(embeddings, f)
         df = pd.DataFrame(embeddings, columns = ['employee', 'embedding'])
         df['distance_metric'] = 'cosine'
 
         cap = cv2.VideoCapture(0)
         while True:
+            start_time = time.time()
             ret, img = cap.read()
             if not ret:
                 print("Could not read the image")
@@ -83,7 +94,6 @@ def main():
                 faces = FaceDetector.detect_faces(
                     faceDetector, detector_backend, img)
             except:
-                
                 faces = []
             if not faces:
                 continue
@@ -127,16 +137,17 @@ def main():
                         employee_name = candidate['employee']
                         best_distance = candidate['distance']
 
-                        print(f"Name: {employee_name}")
+                        # print(f"Name: {employee_name}, Distance: {best_distance}")
                         if best_distance < .2:
                             
                             cv2.rectangle(outputImg, (x, y), (x + w, y + h), (255, 0, 0), 5)
                             pass
-                cv2.imshow("Image", outputImg)
-                press = cv2.waitKey(5)
-                if press == ord('q'):
-                    cv2.destroyAllWindows()
-                    exit(0)
+                # cv2.imshow("Image", outputImg)
+                # press = cv2.waitKey(5)
+                # if press == ord('q'):
+                #     cv2.destroyAllWindows()
+                #     exit(0)
+            # print(f"FPS: {1/(time.time() - start_time)}")
     else:
         print("No employees found")
         exit(0)
