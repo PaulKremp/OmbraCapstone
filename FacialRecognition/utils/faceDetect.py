@@ -19,18 +19,11 @@ class FaceDetect:
             faces: Faces detected from image
         
         """
-        cap = cv2.VideoCapture(0)
-        while True:
-            start_time = time.time()
-            ret, img = cap.read()
-            if not ret:
-                print("Could not read the image")
-                exit(0)
         faces = FaceDetector.detect_faces(FaceDetector, self.backend, image)
 
         for face, (x, y, w, h) in faces:
             faces.append((x, y, w, h))
-
+      
         faces = []
         try:
             faces = FaceDetector.detect_faces(self.detector, self.backend, image)
