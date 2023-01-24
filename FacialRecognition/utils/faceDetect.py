@@ -1,6 +1,7 @@
 from deepface.detectors import FaceDetector
 
 import cv2
+import time
 
 # Not detector because I don't want conflicts in class name
 class FaceDetect:
@@ -11,7 +12,6 @@ class FaceDetect:
 
     def detectFaces(self, image) -> list:
         """Returns faces from an image as list [(face, (x, y, w, h)), (face, (x, y, w, h)), ...]
-
         Args:
             image: OpenCV image (numpy array)
 
@@ -19,6 +19,18 @@ class FaceDetect:
             faces: Faces detected from image
         
         """
+        cap = cv2.VideoCapture(0)
+        while True:
+            start_time = time.time()
+            ret, img = cap.read()
+            if not ret:
+                print("Could not read the image")
+                exit(0)
+        faces = FaceDetector.detect_faces(FaceDetector, self.backend, image)
+
+        for face, (x, y, w, h) in faces:
+            faces.append((x, y, w, h))
+
         faces = []
         try:
             faces = FaceDetector.detect_faces(self.detector, self.backend, image)
@@ -26,9 +38,10 @@ class FaceDetect:
             pass
         return faces
 
-    def displayFaces(self, image):
-        """Displaces faces that are detected from the detector
 
+    def displayFaces(self, image):
+        
+        """Displaces faces that are detected from the detector
         Args:
             image: OpenCV image (numpy array)
 
@@ -36,6 +49,10 @@ class FaceDetect:
             keyPress: Key press from the cv2 window 
         
         """
+        outputImg = image.copy()
+        cv2.rectangle(outputImg, (x, y), (x + w, y + h), (255, 0, 0), 5)
+
+
         faces = self.detectFaces(image)
         displayIm = image.copy()
         for face, (x, y, w, h) in faces:
