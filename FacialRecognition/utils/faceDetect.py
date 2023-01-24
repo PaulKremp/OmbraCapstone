@@ -19,14 +19,12 @@ class FaceDetect:
             faces: Faces detected from image
         
         """
-        faces = FaceDetector.detect_faces(FaceDetector, self.backend, image)
 
-        for face, (x, y, w, h) in faces:
-            faces.append((x, y, w, h))
-      
         faces = []
         try:
             faces = FaceDetector.detect_faces(self.detector, self.backend, image)
+            for face, (x, y, w, h) in faces:
+                faces.append((x, y, w, h))            
         except:
             pass
         return faces
@@ -43,8 +41,6 @@ class FaceDetect:
         
         """
         outputImg = image.copy()
-        cv2.rectangle(outputImg, (x, y), (x + w, y + h), (255, 0, 0), 5)
-
 
         faces = self.detectFaces(image)
         displayIm = image.copy()
