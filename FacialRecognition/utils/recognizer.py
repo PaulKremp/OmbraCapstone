@@ -1,17 +1,19 @@
 from deepface.detectors import FaceDetector
 from deepface import DeepFace
 from deepface.commons import functions, distance as dst
-from embedding import EmbeddingGen  
 
 import cv2
 
 # Not detector because I don't want conflicts in class name
 class Recognizer:
 
-    def __init__(self, backend):
-        self.backend = backend
-        self.recognizer = DeepFace.build_model(backend)
-        #self.embeddings = backend["embeddings"]
+    def __init__(self, model_name, embeddings, input_shape):
+        #self.backend = backend
+        #self.recognizer = DeepFace.build_model(backend)
+        self.embeddings = embeddings
+        self.input_shape = input_shape
+        self.model = model_name
+        # distance metric?
 
     
     def recognizeFaces(self, faces):
@@ -23,7 +25,6 @@ class Recognizer:
             detected_faces: 
         
         """
-
         detector_backend = "opencv"
         faceDetector = FaceDetector.build_model(detector_backend)
 
@@ -34,7 +35,7 @@ class Recognizer:
         custom_face = raw_img.copy()[y:y+h, x:x+w]
         custom_face = functions.preprocess_face(img=custom_face, target_size=(
         input_shape_y, input_shape_x), enforce_detection=False, detector_backend='opencv')
-        threshold = dst.findThreshold(detector_backend, 'cosine')
+        threshold = dst.findThreshold(self.model, 'cosine')
         
         # preprocess_face returns single face. this is expected for source images in db.
         img = functions.preprocess_face(img, target_size=(input_shape_y, input_shape_x), enforce_detection=False, detector_backend=detector_backend)
