@@ -30,20 +30,21 @@ class EmbeddingGen:
 
         return embeddings
 
-    def outputEmbeddings(self, modelname):
+    def outputEmbeddings(self, faceDetectorBackend):
         """Check if embedding exists through load embedding function and if not create embedding and load
         Args:
-            The Model Name
+            modelName: Name of face detector name
 
         Returns:
-            embedding
+            embeddings: 
 
         """
-        if self.loadEmbeddings(self, modelname):
-            return self.loadEmbeddings(self, modelname)
+        embeddings = []
+        if embeddings := self.loadEmbeddings(self.model):
+            pass
         else:
-            self.createEmbeddings(self, modelname, faceDetectorBackend)
-            return self.loadEmbeddings(self, modelname)
+            embeddings = self.createEmbeddings(faceDetectorBackend)
+        return embeddings
 
     def createEmployees(self, db_path):
 
@@ -59,7 +60,7 @@ class EmbeddingGen:
 
         return employees
 
-    def createEmbeddings(self, modelname, faceDetectorBackend):
+    def createEmbeddings(self, faceDetectorBackend):
         """Creates embeddings using the Backend Detector
         Args:
             The Face Detector Backend, and Model
@@ -70,8 +71,7 @@ class EmbeddingGen:
         """
         embeddings = []
         # Should I by calling from faceDetect.py
-        model = DeepFace.build_model(modelname)
-        faceDetector = FaceDetector.build_model(faceDetectorBackend)
+        model = DeepFace.build_model(self.model)
         input_shape = (224, 224)
         input_shape = functions.find_input_shape(model)
         input_shape_x = input_shape[0]
@@ -99,7 +99,7 @@ class EmbeddingGen:
             embedding.append(img_representation)
             embeddings.append(embedding)
 
-        f = open("./db/embeddings_%s.pkl" % modelname, "wb")
+        f = open("./db/embeddings_%s.pkl" % self.model, "wb")
         pickle.dump(embeddings, f)
         # df = pd.DataFrame(embeddings, columns = ['employee', 'embedding'])
 

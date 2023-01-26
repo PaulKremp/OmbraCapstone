@@ -4,6 +4,8 @@ import cv2
 import time
 
 # Not detector because I don't want conflicts in class name
+
+
 class FaceDetect:
 
     def __init__(self, backend):
@@ -17,18 +19,18 @@ class FaceDetect:
 
         Returns:
             faces: Faces detected from image
-        
+
         """
 
         faces = []
         try:
-            faces = FaceDetector.detect_faces(self.detector, self.backend, image)
+            faces = FaceDetector.detect_faces(
+                self.detector, self.backend, image)
             for face, (x, y, w, h) in faces:
-                faces.append(face, (x, y, w, h))            
+                faces.append(face, (x, y, w, h))
         except:
             pass
         return faces
-
 
     def displayFaces(self, image):
         """Displaces faces that are detected from the detector
@@ -37,7 +39,7 @@ class FaceDetect:
 
         Returns:
             keyPress: Key press from the cv2 window 
-        
+
         """
 
         faces = self.detectFaces(image)
