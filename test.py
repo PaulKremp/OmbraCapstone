@@ -13,6 +13,7 @@ import time
 
 
 def createEmployees(db_path):
+    
     employees = []
     if os.path.isdir(db_path) == True:
         for r, d, f in os.walk(db_path):  # r=root, d=directories, f = files

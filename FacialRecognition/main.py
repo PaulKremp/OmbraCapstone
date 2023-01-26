@@ -1,5 +1,4 @@
-from utils.faceDetect import FaceDetect
-from utils.recognizer import Recognizer
+from utils import FaceDetect, Recognizer
 
 import cv2
 
@@ -7,8 +6,7 @@ def main():
 
     # TODO Put everything together (Embedding Creator, FaceDetect, Recognizer)
 
-    faceDetector = FaceDetect("opencv")
-    faceRecognizer = Recognizer("VGG-Face")
+    faceDetector = FaceDetect("mediapipe")
 
     cap = cv2.VideoCapture(0)
 
@@ -16,11 +14,10 @@ def main():
         ret, img = cap.read()
         if not ret:
             break
-        faces = faceDetector.detectFaces(img)
-
-
-
-    pass
+        keyPress = faceDetector.displayFaces(img)
+        if keyPress == ord("q"):
+            cv2.destroyAllWindows()
+            break
 
 if __name__ == "__main__":
     
