@@ -40,7 +40,6 @@ class FaceDetect:
             keyPress: Key press from the cv2 window 
         
         """
-        outputImg = image.copy()
 
         faces = self.detectFaces(image)
         displayIm = image.copy()
