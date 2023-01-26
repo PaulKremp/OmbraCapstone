@@ -6,8 +6,8 @@ from PIL import ImageTk
 
 class Video_Capture:
     def __init__(self, video_source):
-        self.vid = cv2.VideoCapture(video_source)
-        if not self.vid.isOpened():
+        self.vid = cv2.VideoCapture(video_source) # Takes in the video source as a variable
+        if not self.vid.isOpened(): # Checks if the video feed is available
             print("Camera Feed Unavailable")
             exit()
 
@@ -31,24 +31,24 @@ class Video_Capture:
 
 class App:
     def __init__(self, window, window_title, video_source, backend_choice, model_choice):
-        self.window = window
-        self.window.title(window_title)
-        self.video_source = video_source
-        self.window.appearance = ct.set_appearance_mode('dark')
+        self.window = window # Creates CTk Root Window
+        self.window.title(window_title) # Adds a title to the top of the window
+        self.video_source = video_source # Sets video source variable
+        self.window.appearance = ct.set_appearance_mode('dark') # Sets appearance of window to dark mode
         
         self.vid = Video_Capture(video_source) # Open Video Source
 
-        self.canvas = ct.CTkCanvas(window, width = self.vid.width+200, height = self.vid.height)
-        self.canvas.pack()
+        self.canvas = ct.CTkCanvas(window, width = self.vid.width+200, height = self.vid.height) # Creates a canvas based on the dimensions of the image
+        self.canvas.pack() 
 
-        self.delay = 17
+        self.delay = 17 # Sets delay to 17ms (nearly 60 Frames Per Second)
         self.update()
 
         # self.backend_choice = backend_choice
         # self.model_choice = model_choice
         # self.menus()
 
-        self.window.mainloop()
+        self.window.mainloop() # Starts the CTk Window
 
     # def menus(self):
 
@@ -57,13 +57,13 @@ class App:
 
 
     def update(self):
-        ret, frame = self.vid.get_frame()
+        ret, frame = self.vid.get_frame() # Snapshots the current frame from the camera feed
 
         if ret:
-            self.photo = ImageTk.PhotoImage(image = Image.fromarray(frame))
-            self.canvas.create_image(0, 0, image = self.photo, anchor = ct.NW)
+            self.photo = ImageTk.PhotoImage(image = Image.fromarray(frame)) # Converts this frame from RGB to CTk Format
+            self.canvas.create_image(0, 0, image = self.photo, anchor = ct.NW) # Adds the image to the canvas
 
-        self.window.after(self.delay, self.update)
+        self.window.after(self.delay, self.update) # Updates the image every 'self.delay' ms 
 
 App(ct.CTk(), 'Live Camera Feed', 0, 'opencv', 'VGG-Face')
 
@@ -71,7 +71,7 @@ App(ct.CTk(), 'Live Camera Feed', 0, 'opencv', 'VGG-Face')
 
 
 
-    
+    ## Using canvas instead of Frame, create a super().__init__() call using Canvas in App(Canvas)
 
     
 
