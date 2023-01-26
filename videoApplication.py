@@ -30,21 +30,31 @@ class Video_Capture:
             return (ret, None)
 
 class App:
-    def __init__(self, window, window_title, video_source):
+    def __init__(self, window, window_title, video_source, backend_choice, model_choice):
         self.window = window
         self.window.title(window_title)
         self.video_source = video_source
         self.window.appearance = ct.set_appearance_mode('dark')
-
+        
         self.vid = Video_Capture(video_source) # Open Video Source
 
-        self.canvas = ct.CTkCanvas(window, width = self.vid.width, height = self.vid.height)
+        self.canvas = ct.CTkCanvas(window, width = self.vid.width+200, height = self.vid.height)
         self.canvas.pack()
-        
+
         self.delay = 17
         self.update()
 
+        # self.backend_choice = backend_choice
+        # self.model_choice = model_choice
+        # self.menus()
+
         self.window.mainloop()
+
+    # def menus(self):
+
+    #     self.window.backend_dropdown = ct.CTkOptionMenu(master = self, values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backend_choice)
+    #     self.window.model_dropdown = ct.CTkOptionMenu(master = self, values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.model_choice)
+
 
     def update(self):
         ret, frame = self.vid.get_frame()
@@ -55,7 +65,7 @@ class App:
 
         self.window.after(self.delay, self.update)
 
-App(ct.CTk(), 'Live Camera Feed', 0)
+App(ct.CTk(), 'Live Camera Feed', 0, 'opencv', 'VGG-Face')
 
 
 
