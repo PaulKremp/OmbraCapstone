@@ -31,6 +31,8 @@ class Recognizer:
         input_shape_y = self.input_shape[1]
 
         recognized_faces = []
+        
+        unrecognized_faces = []
 
         for face, (x, y, w, h) in faces:
             custom_face = raw_img.copy()[y:y+h, x:x+w]
@@ -47,14 +49,21 @@ class Recognizer:
                 best_distance = candidate['distance']
                 if best_distance < threshold:
                     recognized_faces.append((employee_name, (x, y, w, h)))
-        return recognized_faces
+                else:
+                    unrecognized_faces.append((x, y, w, h))
+                
+        return recognized_faces, unrecognized_faces
 
     def displayRecognizedFaces(self, faces, threshold, image):
-        reconized_faces = self.recognizeFaces(image, faces, threshold)
+        reconized_faces, unrecognized_faces = self.recognizeFaces(image, faces, threshold)
         display_im = image.copy()
         for face in reconized_faces:
             name, (x, y, w, h) = face
             cv2.rectangle(display_im, (x, y), (x + w, y + h), (255, 0, 0), 3)
+
+        for face in unrecognized_faces:
+            (x, y, w, h) = face
+            cv2.rectangle(display_im, (x, y), (x + w, y + h), (0, 0, 255), 3)
         cv2.imshow("Faces", display_im)
         keyPress = cv2.waitKey(5)
         return keyPress
