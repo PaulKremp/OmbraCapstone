@@ -9,11 +9,9 @@ class Recognizer:
 
     def __init__(self, model_name, embeddings, backend):
         self.detector_backend = backend
-        # self.recognizer = DeepFace.build_model(backend)
         self.embeddings = embeddings
         self.model = DeepFace.build_model(model_name)
         self.input_shape = functions.find_input_shape(self.model)
-        # distance metric?
 
     def recognizeFaces(self, img, faces, threshold):
         """recognizes faces that are detected from the detector
