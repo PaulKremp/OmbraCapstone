@@ -60,10 +60,14 @@ class Recognizer:
         for face in reconized_faces:
             name, (x, y, w, h) = face
             cv2.rectangle(display_im, (x, y), (x + w, y + h), (255, 0, 0), 3)
+            cv2.putText(display_im, name.split("/")[2], (x, y - 10),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
         for face in unrecognized_faces:
             (x, y, w, h) = face
             cv2.rectangle(display_im, (x, y), (x + w, y + h), (0, 0, 255), 3)
+            cv2.putText(display_im, "Unidentified Person", (x, y - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
         cv2.imshow("Faces", display_im)
         keyPress = cv2.waitKey(5)
         return keyPress
