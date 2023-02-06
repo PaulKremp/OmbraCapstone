@@ -89,9 +89,8 @@ class Recognizer:
         return keyPress
 
 
-    # method to return captured image TO-DO
     def displayCaptureImageFace(self, faces, threshold, image):
-        """displays recognized faces that are detected from the detector
+        """displays capture image of unrecognized and recognized faces that are detected from the detector
         Args:
             faces: faces detected from the image
 
