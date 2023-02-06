@@ -16,7 +16,11 @@ class Recognizer:
     def recognizeFaces(self, img, faces, threshold):
         """recognizes faces that are detected from the detector
         Args:
-            faces: 
+            faces: faces detected from the image
+
+            img: OpenCV image (numpy array)
+
+            threshold: 
 
         Returns:
             recognized_faces: List of recognized faces [(Name, (x, y, w, h), ...)]
@@ -53,6 +57,20 @@ class Recognizer:
         return recognized_faces, unrecognized_faces
 
     def displayRecognizedFaces(self, faces, threshold, image):
+        """displays recognized faces that are detected from the detector
+        Args:
+            faces: faces detected from the image
+
+            threshold: 
+
+            image: OpenCV image (numpy array)
+
+
+        Returns:
+            keyPress: Key press from the cv2 window 
+
+        """
+
         reconized_faces, unrecognized_faces = self.recognizeFaces(image, faces, threshold)
         display_im = image.copy()
         for face in reconized_faces:
@@ -69,3 +87,41 @@ class Recognizer:
         cv2.imshow("Faces", display_im)
         keyPress = cv2.waitKey(5)
         return keyPress
+
+
+    # method to return captured image TO-DO
+    def displayCaptureImageFace(self, faces, threshold, image):
+        """displays recognized faces that are detected from the detector
+        Args:
+            faces: faces detected from the image
+
+            threshold: 
+
+            image: OpenCV image (numpy array)
+
+        Returns:
+            recognized_faces_images: capture images of recognized faces 
+            unrecognized_faces_images: capture images of unrecognized faces 
+
+        """
+        reconized_faces, unrecognized_faces = self.recognizeFaces(image, faces, threshold)
+        recognized_faces_images = []
+        for face in reconized_faces:
+            name, (x, y, w, h) = face
+            recognized_face_image = image[y:y+h, x:x+w]
+            recognized_face_image = cv2.resize(recognized_face_image, (0,0), fx=2, fy=2)
+            recognized_faces_images.append((name.split("/")[2], recognized_face_image))
+            cv2.putText(recognized_face_image, "Matched: " + name.split("/")[2], (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+            cv2.imshow(name, recognized_face_image)
+
+        unrecognized_faces_images = []
+        for face in unrecognized_faces:
+            (x, y, w, h) = face
+            unrecognized_face_image = image[y:y+h, x:x+w]
+            unrecognized_face_image = cv2.resize(unrecognized_face_image, (0,0), fx=2, fy=2)
+            unrecognized_faces_images.append(("Unidentified Person", unrecognized_face_image))
+            cv2.putText(unrecognized_face_image, "Unknown", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+            cv2.imshow("Unknown", unrecognized_face_image)
+        return recognized_faces_images, unrecognized_faces_images
+            
+

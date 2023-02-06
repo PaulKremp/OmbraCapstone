@@ -104,3 +104,6 @@ class EmbeddingGen:
         # df = pd.DataFrame(embeddings, columns = ['employee', 'embedding'])
 
         return embeddings
+
+
+        # function updateDatabase to clear pickle file and create new one

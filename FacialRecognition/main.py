@@ -25,10 +25,13 @@ def main():
         if not ret:
             break
         faces = faceDetector.detectFaces(img)
-        faceRecognizer.displayRecognizedFaces(faces, 0.2, img)
-        # if keyPress == ord("q"):
-        #     cv2.destroyAllWindows()
-        #     break
+        keyPress = faceRecognizer.displayRecognizedFaces(faces, 0.2, img)
+        captureFaces = faceRecognizer.displayCaptureImageFace(faces, 0.2, img)
+        
+        if keyPress == ord("q"):
+            cv2.destroyAllWindows()
+            break
+        
         print(f"FPS: {1 / (time.time() - start_time)}")
 
 
