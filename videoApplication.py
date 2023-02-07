@@ -65,7 +65,8 @@ class App:
 
         self.window.after(self.delay, self.update) # Updates the image every 'self.delay' ms 
 
-App(ct.CTk(), 'Live Camera Feed', 0, 'opencv', 'VGG-Face')
+videoSource = 'rtsp://admin:sLUx5%23!!@192.168.40.42:554/cam/realmonitor?channel=1&subtype=00&authbasic=YWRtaW46c0xVeDUlMjMhIQ=='
+App(ct.CTk(), 'Live Camera Feed', videoSource, 'opencv', 'VGG-Face')
 
 
 
