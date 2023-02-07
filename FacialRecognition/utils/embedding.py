@@ -107,3 +107,30 @@ class EmbeddingGen:
 
 
         # function updateDatabase to clear pickle file and create new one
+    def deletePKL(self,faceDetectorBackend):
+        """Deletes Exisiting PKL Files
+        Args:
+            faceDetectorBackend; Detector Backend
+
+        """
+        model = DeepFace.build_model(self.model)
+        if os.path.isfile("./db/embeddings_%s.pkl" % self.model, "wb"): # check if file exists
+            os.remove("./db/embeddings_%s.pkl" % self.model, "wb")
+
+        
+
+    def refreshPKL(self,faceDetectorBackend):
+        """Deletes Exisiting PKL Files and re uploads pkl file
+        Args:
+            faceDetectorBackend: Detector Backend
+
+        Returns:
+            embeddings with refreshed model
+
+        """
+        self.deletePKL(faceDetectorBackend)
+        embeddings = self.createEmbeddings(faceDetectorBackend)
+
+        return embeddings
+
+
