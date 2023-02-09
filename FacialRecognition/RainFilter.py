@@ -2,6 +2,8 @@
 import numpy as np
 import cv2
 
+global image_RGB, brightness_coefficient
+
 def generate_random_lines(imshape,slant,drop_length):
     drops=[]    
     for i in range(1500):
@@ -14,7 +16,8 @@ def generate_random_lines(imshape,slant,drop_length):
             drops.append((x,y))   
     return drops            
             
-def add_rain(image):        
+def add_rain(image):      
+
     imshape = image.shape    
     slant_extreme=10    
     slant= np.random.randint(-slant_extreme,slant_extreme)     
@@ -24,10 +27,10 @@ def add_rain(image):
     rain_drops= generate_random_lines(imshape,slant,drop_length)        
     for rain_drop in rain_drops:
         cv2.line(image,(rain_drop[0],rain_drop[1]),(rain_drop[0]+slant,rain_drop[1]+drop_length),drop_color,drop_width)
-        image= cv2.blur(image,(7,7)) ## rainy view are blurry        
-        brightness_coefficient = 0.7 ## rainy days are usually shady     
-        image_HLS = cv2.cvtColor(image,cv2.COLOR_RGB2HLS) ## Conversion to HLS    
-        image_HLS[:,:,1] = image_HLS[:,:,1]*brightness_coefficient ## scale pixel values down for channel 1(Lightness)    
-        image_RGB = cv2.cvtColor(image_HLS,cv2.COLOR_HLS2RGB) ## Conversion to RGB    
+    image= cv2.blur(image,(7,7)) ## rainy view are blurry        
+    brightness_coefficient = 0.7 ## rainy days are usually shady     
+    image_HLS = cv2.cvtColor(image,cv2.COLOR_RGB2HLS) ## Conversion to HLS    
+    image_HLS[:,:,1] = image_HLS[:,:,1]*brightness_coefficient ## scale pixel values down for channel 1(Lightness)    
+    image_RGB = cv2.cvtColor(image_HLS,cv2.COLOR_HLS2RGB) ## Conversion to RGB    
         
     return image_RGB
