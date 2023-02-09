@@ -1,5 +1,5 @@
 import cv2
-import RainFilter
+import FacialRecognition.utils.RainFilter as RainFilter
 
 # Opens the Video file
 cap= cv2.VideoCapture('/home/paulk495/Videos/PeterRecording.mp4')  #Insert file name of video
