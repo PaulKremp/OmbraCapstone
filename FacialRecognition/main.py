@@ -1,4 +1,4 @@
-from utils import EmbeddingGen, FaceDetect, Recognizer, SyntheticFilter
+from utils import EmbeddingGen, FaceDetect, Recognizer
 
 import cv2
 import time
@@ -23,6 +23,7 @@ def main():
     while 1:
         start_time = time.time()
         ret, img = cap.read()
+        
         if not ret:
             break
         faces = faceDetector.detectFaces(img)
