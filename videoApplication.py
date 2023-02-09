@@ -11,9 +11,6 @@ class Video_Capture:
             print("Camera Feed Unavailable")
             exit()
 
-        self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH) # Finds the pixel width of the capture
-        self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT) # Finds the pixel height of the capture
-
     def __del__(self):
         if self.vid.isOpened():
             self.vid.release()
@@ -38,7 +35,7 @@ class App:
         
         self.vid = Video_Capture(video_source) # Open Video Source
 
-        self.canvas = ct.CTkCanvas(window, width = self.vid.width, height = self.vid.height) # Creates a canvas based on the dimensions of the image
+        self.canvas = ct.CTkCanvas(window, width = 1280, height = 720) # Creates a canvas based on the dimensions of the image
         self.canvas.pack(side=ct.LEFT) 
 
         self.delay = 17 # Sets delay to 17ms (nearly 60 Frames Per Second)
@@ -49,19 +46,20 @@ class App:
         self.window.mainloop() # Starts the CTk Window
 
     def menus(self):
-        self.backend_choice = ct.StringVar(value='Choose a Backend')
+        self.backend_choice = ct.StringVar(value='Choose a Backend') # Sets an initial value for the dropdown menu
         self.window.backend_dropdown = ct.CTkOptionMenu(master = self.window, values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backend_choice)
-        self.window.backend_dropdown.pack(side=ct.TOP, padx=5, pady=20)
+        self.window.backend_dropdown.pack(side=ct.TOP, padx=5, pady=20) # Places the dropdown at a location within the window
 
-        self.model_choice = ct.StringVar(value='Choose a Model')
+        self.model_choice = ct.StringVar(value='Choose a Model') # Sets an initial value for the dropdown menu
         self.window.model_dropdown = ct.CTkOptionMenu(master = self.window, values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.model_choice)
-        self.window.model_dropdown.pack(side=ct.TOP, pady=10)
+        self.window.model_dropdown.pack(side=ct.TOP, pady=10) # Places the dropdown at a location within the window
 
     def update(self):
         ret, frame = self.vid.get_frame() # Snapshots the current frame from the camera feed
 
         if ret:
-            self.photo = ImageTk.PhotoImage(image = Image.fromarray(frame)) # Converts this frame from RGB to CTk Format
+            frame = Image.fromarray(frame).resize((1280,720))
+            self.photo = ImageTk.PhotoImage(image = frame) # Converts this frame from RGB to CTk Format
             self.canvas.create_image(0, 0, image = self.photo, anchor = ct.NW) # Adds the image to the canvas
 
         self.window.after(self.delay, self.update) # Updates the image every 'self.delay' ms
