@@ -1,6 +1,6 @@
 from deepface import DeepFace
 from deepface.commons import functions, distance as dst
-
+from datetime import datetime
 import cv2
 import pandas as pd
 import os
@@ -105,7 +105,7 @@ class Recognizer:
             unrecognized_faces_images: capture images of unrecognized faces 
 
         """
-
+            
         reconized_faces, unrecognized_faces = self.recognizeFaces(image, faces, threshold)
         recognized_faces_images = []
         for i, face in enumerate(reconized_faces):
@@ -113,8 +113,10 @@ class Recognizer:
             recognized_face_image = image[y:y+h, x:x+w]
             recognized_face_image = cv2.resize(recognized_face_image, (0,0), fx=2, fy=2)
             recognized_faces_images.append((name.split("/")[2], recognized_face_image))
-            cv2.putText(recognized_face_image, "Matched: " + name.split("/")[2], (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-            cv2.imwrite('captureImages/recognized_{}.jpg'.format(i), recognized_face_image )
+            current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            cv2.putText(recognized_face_image, "Matched: " + name.split("/")[2] + current_time, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+            
+            cv2.imwrite('captureImages/recognized_{}_{}.jpg'.format(i, current_time), recognized_face_image )
 
         unrecognized_faces_images = []
         for i, face in enumerate(unrecognized_faces):
@@ -122,15 +124,9 @@ class Recognizer:
             unrecognized_face_image = image[y:y+h, x:x+w]
             unrecognized_face_image = cv2.resize(unrecognized_face_image, (0,0), fx=2, fy=2)
             unrecognized_faces_images.append(("Unidentified Person", unrecognized_face_image))
-            cv2.putText(unrecognized_face_image, "Unknown", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-            cv2.imwrite('captureImages/unrecognized_{}.jpg'.format(i), unrecognized_face_image )
+            current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            cv2.putText(unrecognized_face_image, "Unknown: " + current_time, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+            
+            cv2.imwrite('captureImages/unrecognized_{}_{}.jpg'.format(i, current_time), unrecognized_face_image )
 
         return recognized_faces_images, unrecognized_faces_images
-
-    def clearCaptureImageFile():
-        if os.path.exists("captureImages"):
-            os.remove("captureImages")
-
-
-
-

@@ -16,7 +16,6 @@ def main():
     faceDetector = FaceDetect(faceDetectorBackend)
     faceRecognizer = Recognizer(
         recognizerBackend, embeddings, faceDetectorBackend)
-    #filterImage = SyntheticFilter 
 
     cap = cv2.VideoCapture(0)
 
@@ -30,7 +29,6 @@ def main():
         keyPress = faceRecognizer.displayRecognizedFaces(faces, 0.2, img)
         captureFaces = faceRecognizer.displayCaptureImageFace(faces, 0.2, img)
 
-        #filterIm = SyntheticFilter.add_rain(img)
 
         if keyPress == ord("q"):
             cv2.destroyAllWindows()
