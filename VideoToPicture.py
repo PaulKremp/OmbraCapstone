@@ -1,8 +1,8 @@
 import cv2
-import FacialRecognition.utils.RainFilter as RainFilter
+#import FacialRecognition.utils.RainFilter as RainFilter
 
 # Opens the Video file
-cap= cv2.VideoCapture('/home/paulk495/Videos/PeterRecording.mp4')  #Insert file name of video
+cap= cv2.VideoCapture('/home/paulk495/Videos/2023-02/Daniel_IR.mp4')  #Insert file name of video
 i=0
 counter = 0
 while(cap.isOpened()):
@@ -35,7 +35,7 @@ while(cap.isOpened()):
     cv2.imshow('img', img)
     cv2.waitKey()
     if len(faces) > 0  :
-        cv2.imwrite('PeterRain '+str(i)+'.jpg',frame)   #input title of person in the pictures
+        cv2.imwrite('Daniel_IR'+str(i)+'.jpg',frame)   #input title of person in the pictures
         i+=1
 
 cap.release()
