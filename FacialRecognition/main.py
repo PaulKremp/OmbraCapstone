@@ -1,5 +1,7 @@
 from utils import EmbeddingGen, FaceDetect, Recognizer
 
+
+
 import cv2
 import time
 
@@ -11,13 +13,15 @@ def main():
     recognizerBackend = "VGG-Face"
     faceDetectorBackend = "opencv"
 
+    EmbeddingGen("./db", recognizerBackend).refreshPKL(faceDetectorBackend)
+
     embeddings = EmbeddingGen(
         "./db", recognizerBackend).outputEmbeddings(faceDetectorBackend)
     faceDetector = FaceDetect(faceDetectorBackend)
     faceRecognizer = Recognizer(
         recognizerBackend, embeddings, faceDetectorBackend)
 
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture('rtsp://admin:sLUx5%23!!@192.168.0.51:554/cam/realmonitor?channel=1&subtype=00&authbasic=YWRtaW46c0xVeDUlMjMhIQ==')
 
     while 1:
         start_time = time.time()
