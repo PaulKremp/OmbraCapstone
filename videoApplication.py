@@ -4,6 +4,8 @@ import cv2
 import time
 from PIL import Image
 from PIL import ImageTk
+from FacialRecognition.utils import Recognizer 
+from FacialRecognition
 
 class Video_Capture:
     def __init__(self, video_source):
