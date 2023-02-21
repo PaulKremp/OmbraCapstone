@@ -39,7 +39,7 @@ def main():
         faces = faceDetector.detectFaces(img)
         keyPress = faceRecognizer.displayRecognizedFaces(faces, 0.2, img)
         captureImage = faceRecognizer.displayCaptureImageFace(faces, 0.2, img)
-
+        captureImageWithBoxes = faceRecognizer.displayRecognizedFaceswithBoundingBoxes(faces, 0.2, img)
        # keyPress to delete the unrecognized and recognized face files within captureImages
         if keyPress == ord("r"):
             # Delete contents of recognizedFaces and unrecognizedFaces directories
