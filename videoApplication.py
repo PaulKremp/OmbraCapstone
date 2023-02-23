@@ -13,7 +13,7 @@ from FacialRecognition.utils import FaceDetect
 class Video_Capture:
         
     def __init__(self, video_source):
-        self.vid = cv2.VideoCapture(0) # Takes in the video source as a variable
+        self.vid = cv2.VideoCapture(video_source) # Takes in the video source as a variable
         recognizerBackend = "VGG-Face"
         faceDetectorBackend = "opencv"
         if not self.vid.isOpened(): # Checks if the video feed is available
@@ -50,7 +50,7 @@ class Video_Capture:
             ret, frame = self.vid.read() # Takes a snapshot of each frame from the live feed
             faces = faceDetector.detectFaces(frame)
             keyPress = faceRecognizer.displayRecognizedFaces(faces, 0.2, frame)
-            captureImage = faceRecognizer.displayCaptureImageFace(faces, 0.2, frame)
+            #captureImage = faceRecognizer.displayCaptureImageFace(faces, 0.2, frame)
             captureImageWithBoxes = faceRecognizer.displayRecognizedFaceswithBoundingBoxes(faces, 0.2, frame)
             
            
@@ -88,7 +88,7 @@ class App:
         self.canvas = ct.CTkCanvas(window, width = 1280, height = 720, bg ='black', highlightthickness = 0) # Creates a canvas with dimensions of 720p for the camera
         self.canvas.pack(side=ct.LEFT) 
 
-        self.delay = 1 # Sets delay to 17ms (nearly 60 Frames Per Second)
+        self.delay = 17 # Sets delay to 17ms (nearly 60 Frames Per Second)
         self.update()
 
         self.screenshot() # Creates functional screenshot button
@@ -131,9 +131,14 @@ class App:
         self.screenshot_button.pack(side=ct.BOTTOM, padx=5)
 
 
+<<<<<<< HEAD
 
 videoSource = 0
 #videoSource = 'rtsp://admin:sLUx5%23!!@192.168.0.51:554/cam/realmonitor?channel=1&subtype=0'
+=======
+#videoSource = 0
+videoSource = 'rtsp://admin:sLUx5%23!!@192.168.40.42:554/cam/realmonitor?channel=1&subtype=00&authbasic=YWRtaW46c0xVeDUlMjMhIQ=='
+>>>>>>> 3ba153bb7e3a4e7c806080f08fee0683e5f4b485
 App(ct.CTk(), 'Live Camera Feed', videoSource)
 
 
