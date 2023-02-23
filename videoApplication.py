@@ -2,6 +2,8 @@ from tkinter import *
 import customtkinter as ct
 import cv2
 import time
+import os
+import shutil
 from PIL import Image
 from PIL import ImageTk
 from FacialRecognition.utils import Recognizer 
@@ -16,7 +18,7 @@ class Video_Capture:
         faceDetectorBackend = "opencv"
         if not self.vid.isOpened(): # Checks if the video feed is available
             print("Camera Feed Unavailable")
-            exit()
+            exit()        
         #self.embeddings = EmbeddingGen("./db", recognizerBackend).refreshPKL(faceDetectorBackend)
         
     def __del__(self):
@@ -36,20 +38,43 @@ class Video_Capture:
         faceRecognizer = Recognizer(
         recognizerBackend, embeddings, faceDetectorBackend)
 
+         # Create directories for recognizedFaces and unrecognizedFaces
+        if not os.path.exists("captureImages/recognizedFaces"):
+            os.makedirs("captureImages/recognizedFaces")
+        if not os.path.exists("captureImages/unrecognizedFaces"):
+            os.makedirs("captureImages/unrecognizedFaces")
+        
+
         if self.vid.isOpened(): # Checks if video feed is accessible
+            start_time = time.time()
             ret, frame = self.vid.read() # Takes a snapshot of each frame from the live feed
             faces = faceDetector.detectFaces(frame)
             keyPress = faceRecognizer.displayRecognizedFaces(faces, 0.2, frame)
             captureImage = faceRecognizer.displayCaptureImageFace(faces, 0.2, frame)
             captureImageWithBoxes = faceRecognizer.displayRecognizedFaceswithBoundingBoxes(faces, 0.2, frame)
+            
+           
 
+            if keyPress == ord("r"):
+                # Delete contents of recognizedFaces and unrecognizedFaces directories
+                shutil.rmtree("captureImages/recognizedFaces", ignore_errors=True)
+                shutil.rmtree("captureImages/unrecognizedFaces", ignore_errors=True)
+
+                # Create recognizedFaces and unrecognizedFaces directories
+                os.makedirs("captureImages/recognizedFaces")
+                os.makedirs("captureImages/unrecognizedFaces")
+            if keyPress == ord("q"):
+                cv2.destroyAllWindows()
+                exit()
+    
             if ret:
-               # Returns the frame with the bounding boxes around the faces and the RGB Format of the frame
-               return (ret, cv2.cvtColor(captureImageWithBoxes, cv2.COLOR_BGR2RGB)) 
-            else:
-                return (ret, None) 
-        else:
-            return (ret, None)
+                # Returns the frame with the bounding boxes around the faces and the RGB Format of the frame
+                return (ret, cv2.cvtColor(captureImageWithBoxes, cv2.COLOR_BGR2RGB)) 
+          
+        
+            
+            
+
 
 class App:
     def __init__(self, window, window_title, video_source):
@@ -106,8 +131,9 @@ class App:
         self.screenshot_button.pack(side=ct.BOTTOM, padx=5)
 
 
-#videoSource = 0
-videoSource = 'rtsp://admin:sLUx5%23!!@192.168.0.51:554/cam/realmonitor?channel=1&subtype=0'
+
+videoSource = 0
+#videoSource = 'rtsp://admin:sLUx5%23!!@192.168.0.51:554/cam/realmonitor?channel=1&subtype=0'
 App(ct.CTk(), 'Live Camera Feed', videoSource)
 
 
