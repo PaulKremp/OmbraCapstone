@@ -70,11 +70,6 @@ class Video_Capture:
             if ret:
                 # Returns the frame with the bounding boxes around the faces and the RGB Format of the frame
                 return (ret, cv2.cvtColor(captureImageWithBoxes, cv2.COLOR_BGR2RGB)) 
-          
-        
-            
-            
-
 
 class App:
     def __init__(self, window, window_title, video_source):
@@ -129,8 +124,8 @@ class App:
     def screenshot(self):
         self.screenshot_button = ct.CTkButton(master = self.window, width=150, height=150, text='Snapshot').pack(side=ct.BOTTOM, padx=5) #command=self.screenshot_event
 
-#videoSource = 0
-videoSource = 'rtsp://admin:sLUx5%23!!@192.168.40.42:554/cam/realmonitor?channel=1&subtype=0'
+videoSource = 0
+#videoSource = 'rtsp://admin:sLUx5%23!!@192.168.40.42:554/cam/realmonitor?channel=1&subtype=0'
 App(ct.CTk(), 'Live Camera Feed', videoSource)
 
 
