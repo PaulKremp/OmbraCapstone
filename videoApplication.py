@@ -39,31 +39,31 @@ class App:
         self.canvas = ct.CTkCanvas(window, width = 1280, height = 720, bg ='black', highlightthickness = 0) # Creates a canvas with dimensions of 720p for the camera
         self.canvas.pack(side=ct.LEFT) 
 
-        self.delay = 1 # Sets delay to 17ms (nearly 60 Frames Per Second)
+        self.delay = 17 # Sets delay to 17ms (nearly 60 Frames Per Second)
         self.update()
 
         self.screenshot() # Creates functional screenshot button
 
-        self.settings() 
-        #self.menus() # Creates the option menus
+        #self.settings() 
+        self.menus() # Creates the option menus
 
         self.window.mainloop() # Starts the CTk Window
 
     def menus(self):
-        self.settings_window = Toplevel(self.window)
-        self.settings_window.geometry("400x200")
-        self.settings_window.title('Settings')
-        self.settings_canvas = ct.CTkCanvas(self.settings_window, width = 400, height = 200, bg = 'black', highlightthickness = 0)
+        # self.settings_window = Toplevel(self.window)
+        # self.settings_window.geometry("400x200")
+        # self.settings_window.title('Settings')
+        # self.settings_canvas = ct.CTkCanvas(self.settings_window, width = 400, height = 200, bg = 'black', highlightthickness = 0)
         self.backend_choice = ct.StringVar(value='Choose a Backend') # Sets an initial value for the dropdown menu
-        self.window.backend_dropdown = ct.CTkOptionMenu(master = self.settings_window, values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backend_choice) # Creates choices for the dropdown menu
+        self.window.backend_dropdown = ct.CTkOptionMenu(master = self.window, values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backend_choice) # Creates choices for the dropdown menu
         self.window.backend_dropdown.pack(side = ct.TOP, padx = 5, pady = 20) # Places the dropdown at a location within the window
 
         self.model_choice = ct.StringVar(value='Choose a Model') # Sets an initial value for the dropdown menu
-        self.window.model_dropdown = ct.CTkOptionMenu(master = self.settings_window, values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.model_choice) # Creates choices for the dropdown menu
+        self.window.model_dropdown = ct.CTkOptionMenu(master = self.window, values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.model_choice) # Creates choices for the dropdown menu
         self.window.model_dropdown.pack(side=ct.TOP, pady=10) # Places the dropdown at a location within the window
 
-    def settings(self):
-        self.settings_button = ct.CTkButton(master = self.window, width = 150, height = 150, text = 'Settings', command = self.menus()).pack(side = TOP, pady = 5)
+    # def settings(self):
+    #     self.settings_button = ct.CTkButton(master = self.window, width = 150, height = 150, text = 'Settings', command = self.menus()).pack(side = TOP, pady = 5)
 
     def update(self):
         ret, frame = self.vid.get_frame() # Snapshots the current frame from the camera feed
@@ -78,12 +78,11 @@ class App:
         self.window.after(self.delay, self.update) # Updates the image every 'self.delay' ms
         
     def screenshot(self):
-        self.screenshot_button = ct.CTkButton(master = self.window, width=150, height=150, text='Snapshot') #command=self.screenshot_event
-        self.screenshot_button.pack(side=ct.BOTTOM, padx=5)
+        self.screenshot_button = ct.CTkButton(master = self.window, width=150, height=150, text='Snapshot').pack(side=ct.BOTTOM, padx=5) #command=self.screenshot_event
 
 
 #videoSource = 0
-videoSource = 'rtsp://admin:sLUx5%23!!@192.168.0.51:554/cam/realmonitor?channel=1&subtype=0'
+videoSource = 'rtsp://admin:sLUx5%23!!@192.168.40.42:554/cam/realmonitor?channel=1&subtype=0'
 App(ct.CTk(), 'Live Camera Feed', videoSource)
 
 
