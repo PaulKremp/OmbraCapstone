@@ -13,7 +13,7 @@ from FacialRecognition.utils import FaceDetect
 class Video_Capture:
         
     def __init__(self, video_source):
-        self.vid = cv2.VideoCapture(video_source) # Takes in the video source as a variable
+        self.vid = cv2.VideoCapture(0) # Takes in the video source as a variable
         recognizerBackend = "VGG-Face"
         faceDetectorBackend = "opencv"
         if not self.vid.isOpened(): # Checks if the video feed is available
@@ -46,14 +46,12 @@ class Video_Capture:
         
 
         if self.vid.isOpened(): # Checks if video feed is accessible
-            start_time = time.time()
             ret, frame = self.vid.read() # Takes a snapshot of each frame from the live feed
             faces = faceDetector.detectFaces(frame)
             keyPress = faceRecognizer.displayRecognizedFaces(faces, 0.2, frame)
-            #captureImage = faceRecognizer.displayCaptureImageFace(faces, 0.2, frame)
+            captureImage = faceRecognizer.displayCaptureImageFace(faces, 0.2, frame)
             captureImageWithBoxes = faceRecognizer.displayRecognizedFaceswithBoundingBoxes(faces, 0.2, frame)
             
-           
 
             if keyPress == ord("r"):
                 # Delete contents of recognizedFaces and unrecognizedFaces directories
@@ -70,11 +68,9 @@ class Video_Capture:
             if ret:
                 # Returns the frame with the bounding boxes around the faces and the RGB Format of the frame
                 return (ret, cv2.cvtColor(captureImageWithBoxes, cv2.COLOR_BGR2RGB)) 
+            else: 
+                return(ret, None)
           
-        
-            
-            
-
 
 class App:
     def __init__(self, window, window_title, video_source):
@@ -131,14 +127,10 @@ class App:
         self.screenshot_button.pack(side=ct.BOTTOM, padx=5)
 
 
-<<<<<<< HEAD
+
 
 videoSource = 0
 #videoSource = 'rtsp://admin:sLUx5%23!!@192.168.0.51:554/cam/realmonitor?channel=1&subtype=0'
-=======
-#videoSource = 0
-videoSource = 'rtsp://admin:sLUx5%23!!@192.168.40.42:554/cam/realmonitor?channel=1&subtype=00&authbasic=YWRtaW46c0xVeDUlMjMhIQ=='
->>>>>>> 3ba153bb7e3a4e7c806080f08fee0683e5f4b485
 App(ct.CTk(), 'Live Camera Feed', videoSource)
 
 
