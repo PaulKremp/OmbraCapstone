@@ -1,5 +1,5 @@
 from utils import EmbeddingGen, FaceDetect, Recognizer
-
+import RainFilter
 
 
 import cv2
@@ -14,7 +14,7 @@ def main():
     recognizerBackend = "VGG-Face"
     faceDetectorBackend = "opencv"
 
-    EmbeddingGen("./db", recognizerBackend).refreshPKL(faceDetectorBackend)
+    #EmbeddingGen("./db", recognizerBackend).refreshPKL(faceDetectorBackend)
 
     embeddings = EmbeddingGen(
         "./db", recognizerBackend).outputEmbeddings(faceDetectorBackend)
@@ -22,7 +22,7 @@ def main():
     faceRecognizer = Recognizer(
         recognizerBackend, embeddings, faceDetectorBackend)
 
-    cap = cv2.VideoCapture('rtsp://admin:sLUx5%23!!@192.168.0.51:554/cam/realmonitor?channel=1&subtype=00&authbasic=YWRtaW46c0xVeDUlMjMhIQ==')
+    cap = cv2.VideoCapture(0) #'rtsp://admin:sLUx5%23!!@192.168.0.51:554/cam/realmonitor?channel=1&subtype=00&authbasic=YWRtaW46c0xVeDUlMjMhIQ==')
 
     # Create directories for recognizedFaces and unrecognizedFaces
     if not os.path.exists("captureImages/recognizedFaces"):
@@ -33,7 +33,7 @@ def main():
     while 1:
         start_time = time.time()
         ret, img = cap.read()
-    
+        img = RainFilter.add_rain(img)
         if not ret:
             break
         faces = faceDetector.detectFaces(img)
