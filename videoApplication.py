@@ -2,6 +2,7 @@ from tkinter import *
 import customtkinter as ct
 import cv2
 import time
+import queue
 import os
 import shutil
 from PIL import Image
@@ -10,12 +11,19 @@ from FacialRecognition.utils import Recognizer
 from FacialRecognition.utils import EmbeddingGen
 from FacialRecognition.utils import FaceDetect 
 
+
 class Video_Capture:
         
     def __init__(self, video_source):
         self.vid = cv2.VideoCapture(0) # Takes in the video source as a variable
         recognizerBackend = "VGG-Face"
         faceDetectorBackend = "opencv"
+        self.embeddings = EmbeddingGen(
+        "./db", recognizerBackend).outputEmbeddings(faceDetectorBackend)
+        self.faceDetector = FaceDetect(faceDetectorBackend)
+        self.faceRecognizer = Recognizer(
+        recognizerBackend, self.embeddings, faceDetectorBackend)
+        self.Q = queue.Queue()
         if not self.vid.isOpened(): # Checks if the video feed is available
             print("Camera Feed Unavailable")
             exit()        
@@ -28,15 +36,6 @@ class Video_Capture:
         
 
     def get_frame(self): 
-        #imported from main.py backend (lines 29-37)
-        recognizerBackend = "VGG-Face"
-        faceDetectorBackend = "opencv"
-       
-        embeddings = EmbeddingGen(
-        "./db", recognizerBackend).outputEmbeddings(faceDetectorBackend)
-        faceDetector = FaceDetect(faceDetectorBackend)
-        faceRecognizer = Recognizer(
-        recognizerBackend, embeddings, faceDetectorBackend)
 
          # Create directories for recognizedFaces and unrecognizedFaces
         if not os.path.exists("captureImages/recognizedFaces"):
@@ -47,23 +46,34 @@ class Video_Capture:
 
         if self.vid.isOpened(): # Checks if video feed is accessible
             ret, frame = self.vid.read() # Takes a snapshot of each frame from the live feed
+<<<<<<< HEAD
             faces = faceDetector.detectFaces(frame)
             keyPress = faceRecognizer.displayRecognizedFaces(faces, 0.2, frame)
             captureImage = faceRecognizer.displayCaptureImageFace(faces, 0.2, frame)
             captureImageWithBoxes = faceRecognizer.displayRecognizedFaceswithBoundingBoxes(faces, 0.2, frame)
+=======
+            self.Q.put(frame)   #Add Queue to combat buffer
+            while self.Q.qsize() > 1:
+                self.Q.get()
+            recentFrame = self.Q.get()
+            faces = self.faceDetector.detectFaces(recentFrame)
+            # keyPress = faceRecognizer.displayRecognizedFaces(faces, 0.2, frame)
+            #captureImage = faceRecognizer.displayCaptureImageFace(faces, 0.2, frame)
+            captureImageWithBoxes = self.faceRecognizer.displayRecognizedFaceswithBoundingBoxes(faces, 0.2, recentFrame)
+>>>>>>> b6f2284422abd128dc2e7c2a164acd9a445a96f6
             
 
-            if keyPress == ord("r"):
-                # Delete contents of recognizedFaces and unrecognizedFaces directories
-                shutil.rmtree("captureImages/recognizedFaces", ignore_errors=True)
-                shutil.rmtree("captureImages/unrecognizedFaces", ignore_errors=True)
+            # if keyPress == ord("r"):
+            #     # Delete contents of recognizedFaces and unrecognizedFaces directories
+            #     shutil.rmtree("captureImages/recognizedFaces", ignore_errors=True)
+            #     shutil.rmtree("captureImages/unrecognizedFaces", ignore_errors=True)
 
-                # Create recognizedFaces and unrecognizedFaces directories
-                os.makedirs("captureImages/recognizedFaces")
-                os.makedirs("captureImages/unrecognizedFaces")
-            if keyPress == ord("q"):
-                cv2.destroyAllWindows()
-                exit()
+            #     # Create recognizedFaces and unrecognizedFaces directories
+            #     os.makedirs("captureImages/recognizedFaces")
+            #     os.makedirs("captureImages/unrecognizedFaces")
+            # if keyPress == ord("q"):
+            #     cv2.destroyAllWindows()
+            #     exit()
     
             if ret:
                 # Returns the frame with the bounding boxes around the faces and the RGB Format of the frame
@@ -89,26 +99,26 @@ class App:
 
         self.screenshot() # Creates functional screenshot button
 
-        self.settings() 
-        #self.menus() # Creates the option menus
+        #self.settings() 
+        self.menus() # Creates the option menus
 
         self.window.mainloop() # Starts the CTk Window
 
     def menus(self):
-        self.settings_window = Toplevel(self.window)
-        self.settings_window.geometry("400x200")
-        self.settings_window.title('Settings')
-        self.settings_canvas = ct.CTkCanvas(self.settings_window, width = 400, height = 200, bg = 'black', highlightthickness = 0)
+        # self.settings_window = Toplevel(self.window)
+        # self.settings_window.geometry("400x200")
+        # self.settings_window.title('Settings')
+        # self.settings_canvas = ct.CTkCanvas(self.settings_window, width = 400, height = 200, bg = 'black', highlightthickness = 0)
         self.backend_choice = ct.StringVar(value='Choose a Backend') # Sets an initial value for the dropdown menu
-        self.window.backend_dropdown = ct.CTkOptionMenu(master = self.settings_window, values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backend_choice) # Creates choices for the dropdown menu
+        self.window.backend_dropdown = ct.CTkOptionMenu(master = self.window, values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backend_choice) # Creates choices for the dropdown menu
         self.window.backend_dropdown.pack(side = ct.TOP, padx = 5, pady = 20) # Places the dropdown at a location within the window
 
         self.model_choice = ct.StringVar(value='Choose a Model') # Sets an initial value for the dropdown menu
-        self.window.model_dropdown = ct.CTkOptionMenu(master = self.settings_window, values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.model_choice) # Creates choices for the dropdown menu
+        self.window.model_dropdown = ct.CTkOptionMenu(master = self.window, values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.model_choice) # Creates choices for the dropdown menu
         self.window.model_dropdown.pack(side=ct.TOP, pady=10) # Places the dropdown at a location within the window
 
-    def settings(self):
-        self.settings_button = ct.CTkButton(master = self.window, width = 150, height = 150, text = 'Settings', command = self.menus()).pack(side = TOP, pady = 5)
+    # def settings(self):
+    #     self.settings_button = ct.CTkButton(master = self.window, width = 150, height = 150, text = 'Settings', command = self.menus()).pack(side = TOP, pady = 5)
 
     def update(self):
         ret, frame = self.vid.get_frame() # Snapshots the current frame from the camera feed
@@ -123,14 +133,18 @@ class App:
         self.window.after(self.delay, self.update) # Updates the image every 'self.delay' ms
         
     def screenshot(self):
-        self.screenshot_button = ct.CTkButton(master = self.window, width=150, height=150, text='Snapshot') #command=self.screenshot_event
-        self.screenshot_button.pack(side=ct.BOTTOM, padx=5)
+        self.screenshot_button = ct.CTkButton(master = self.window, width=150, height=150, text='Snapshot').pack(side=ct.BOTTOM, padx=5) #command=self.screenshot_event
 
+<<<<<<< HEAD
 
 
 
 videoSource = 0
 #videoSource = 'rtsp://admin:sLUx5%23!!@192.168.0.51:554/cam/realmonitor?channel=1&subtype=0'
+=======
+#videoSource = 0
+videoSource = 'rtsp://admin:sLUx5%23!!@192.168.40.42:554/cam/realmonitor?channel=1&subtype=0'
+>>>>>>> b6f2284422abd128dc2e7c2a164acd9a445a96f6
 App(ct.CTk(), 'Live Camera Feed', videoSource)
 
 
