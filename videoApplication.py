@@ -15,19 +15,18 @@ from FacialRecognition.utils import FaceDetect
 class Video_Capture:
         
     def __init__(self, video_source):
-        self.vid = cv2.VideoCapture(0) # Takes in the video source as a variable
+        self.vid = cv2.VideoCapture(video_source) # Takes in the video source as a variable
         recognizerBackend = "VGG-Face"
         faceDetectorBackend = "opencv"
         self.embeddings = EmbeddingGen(
         "./db", recognizerBackend).outputEmbeddings(faceDetectorBackend)
         self.faceDetector = FaceDetect(faceDetectorBackend)
-        self.faceRecognizer = Recognizer(
-        recognizerBackend, self.embeddings, faceDetectorBackend)
+        self.faceRecognizer = Recognizer(recognizerBackend, self.embeddings, 
+        faceDetectorBackend)
         self.Q = queue.Queue()
         if not self.vid.isOpened(): # Checks if the video feed is available
             print("Camera Feed Unavailable")
             exit()        
-        #self.embeddings = EmbeddingGen("./db", recognizerBackend).refreshPKL(faceDetectorBackend)
         
     def __del__(self):
         if self.vid.isOpened():
@@ -36,46 +35,25 @@ class Video_Capture:
         
 
     def get_frame(self): 
-
          # Create directories for recognizedFaces and unrecognizedFaces
         if not os.path.exists("captureImages/recognizedFaces"):
             os.makedirs("captureImages/recognizedFaces")
         if not os.path.exists("captureImages/unrecognizedFaces"):
             os.makedirs("captureImages/unrecognizedFaces")
-        
+            
 
         if self.vid.isOpened(): # Checks if video feed is accessible
             ret, frame = self.vid.read() # Takes a snapshot of each frame from the live feed
-<<<<<<< HEAD
-            faces = faceDetector.detectFaces(frame)
-            keyPress = faceRecognizer.displayRecognizedFaces(faces, 0.2, frame)
-            captureImage = faceRecognizer.displayCaptureImageFace(faces, 0.2, frame)
-            captureImageWithBoxes = faceRecognizer.displayRecognizedFaceswithBoundingBoxes(faces, 0.2, frame)
-=======
             self.Q.put(frame)   #Add Queue to combat buffer
             while self.Q.qsize() > 1:
                 self.Q.get()
             recentFrame = self.Q.get()
             faces = self.faceDetector.detectFaces(recentFrame)
-            # keyPress = faceRecognizer.displayRecognizedFaces(faces, 0.2, frame)
-            #captureImage = faceRecognizer.displayCaptureImageFace(faces, 0.2, frame)
+            captureImage = self.faceRecognizer.displayCaptureImageFace(faces, 0.2, frame)
             captureImageWithBoxes = self.faceRecognizer.displayRecognizedFaceswithBoundingBoxes(faces, 0.2, recentFrame)
->>>>>>> b6f2284422abd128dc2e7c2a164acd9a445a96f6
-            
-
-            # if keyPress == ord("r"):
-            #     # Delete contents of recognizedFaces and unrecognizedFaces directories
-            #     shutil.rmtree("captureImages/recognizedFaces", ignore_errors=True)
-            #     shutil.rmtree("captureImages/unrecognizedFaces", ignore_errors=True)
-
-            #     # Create recognizedFaces and unrecognizedFaces directories
-            #     os.makedirs("captureImages/recognizedFaces")
-            #     os.makedirs("captureImages/unrecognizedFaces")
-            # if keyPress == ord("q"):
-            #     cv2.destroyAllWindows()
-            #     exit()
-    
+        
             if ret:
+                 
                 # Returns the frame with the bounding boxes around the faces and the RGB Format of the frame
                 return (ret, cv2.cvtColor(captureImageWithBoxes, cv2.COLOR_BGR2RGB)) 
             else: 
@@ -135,16 +113,13 @@ class App:
     def screenshot(self):
         self.screenshot_button = ct.CTkButton(master = self.window, width=150, height=150, text='Snapshot').pack(side=ct.BOTTOM, padx=5) #command=self.screenshot_event
 
-<<<<<<< HEAD
 
 
-
-videoSource = 0
+# copy relative path in line 119 for videos 6ft,8ft, and 10ft in the baselineVideos folder
+videoSource = r'baselineVideos\10ftIR.mp4' 
 #videoSource = 'rtsp://admin:sLUx5%23!!@192.168.0.51:554/cam/realmonitor?channel=1&subtype=0'
-=======
 #videoSource = 0
-videoSource = 'rtsp://admin:sLUx5%23!!@192.168.40.42:554/cam/realmonitor?channel=1&subtype=0'
->>>>>>> b6f2284422abd128dc2e7c2a164acd9a445a96f6
+#videoSource = 'rtsp://admin:sLUx5%23!!@192.168.40.42:554/cam/realmonitor?channel=1&subtype=0'
 App(ct.CTk(), 'Live Camera Feed', videoSource)
 
 
