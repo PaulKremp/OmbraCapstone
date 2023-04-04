@@ -78,6 +78,7 @@ class App():
 
     def openSettings(self):
         settingsWindow = ct.CTkToplevel(self.window)
+        settingsWindow.attributes("-topmost", True)
         settingsWindow.geometry('300x200')
         settingsWindow.title("Settings")
 
