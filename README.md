@@ -2,7 +2,9 @@
 Ombra Capstone
 This is the software stack for Group #9 Block O-Mbras capstone for the Fall 22' Semester
 
-TO TEST VIDEOS IR 6 feet, IR 8 feet, and IR 10 feet
+TO TEST VIDEOS IR 6 feet, IR 8 feet, and IR 10 feet: these tests are being conducted to determine if processing speed is an issue within loss of efficiency in IR facial recognition and detection. 
+
+Videos are located in the baselineVideos folder. Please run tests on 6ftIR.mp4, 8ftIR.mp4 and 10ftIR.mp4. 
 
 Everything needed is in the appication-dev branch. To run the main file, only use videoApplication.py. 
 
