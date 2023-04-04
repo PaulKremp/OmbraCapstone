@@ -59,8 +59,8 @@ class App():
         self.delay = 17
         self.update()
 
-        self.settings_button = ct.CTkButton(self.window, fg_color = "#FF2400", hover_color = "#BA1B01", text_color = "#B4B4B4", width = 125, height = 125, text = "Settings", command = self.openSettings).pack(side = ct.TOP, padx = 5, pady = 2)
-        self.screenshot_button = ct.CTkButton(self.window, fg_color = "#FF2400", hover_color = "#BA1B01", text_color = "#B4B4B4", width = 125, height = 125, text = "Screenshot", command = self.takeScreenshot).pack(side = ct.BOTTOM, padx = 5, pady = 2)
+        self.settings_button = ct.CTkButton(self.window, fg_color = "#EA2100", hover_color = "#BA1B01", text_color = "#000000", width = 125, height = 125, text = "Settings", command = self.openSettings).pack(side = ct.TOP, padx = 5, pady = 2)
+        self.screenshot_button = ct.CTkButton(self.window, fg_color = "#EA2100", hover_color = "#BA1B01", text_color = "#000000", width = 125, height = 125, text = "Screenshot", command = self.takeScreenshot).pack(side = ct.BOTTOM, padx = 5, pady = 2)
         self.window.mainloop()
 
     def update(self):
@@ -83,11 +83,11 @@ class App():
         settingsWindow.title("Settings")
 
         self.backend_choice = ct.StringVar(value='Choose a Backend') # Sets an initial value for the dropdown menu
-        self.backend_dropdown = ct.CTkOptionMenu(master = settingsWindow, fg_color = "#FF2400", dropdown_fg_color = "#FF2400", dropdown_hover_color = "#BA1B01", text_color = "#B4B4B4", dropdown_text_color = "#B4B4B4", button_hover_color = "#BA1B01", button_color = "#BA1B01", values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backend_choice) # Creates choices for the dropdown menu
+        self.backend_dropdown = ct.CTkOptionMenu(master = settingsWindow, fg_color = "#EA2100", dropdown_fg_color = "#EA2100", dropdown_hover_color = "#BA1B01", text_color = "#000000", dropdown_text_color = "#000000", button_hover_color = "#BA1B01", button_color = "#BA1B01", values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backend_choice) # Creates choices for the dropdown menu
         self.backend_dropdown.pack(side = ct.TOP, padx = 5, pady = 20) # Places the dropdown at a location within the window
 
         self.model_choice = ct.StringVar(value='Choose a Model') # Sets an initial value for the dropdown menu
-        self.model_dropdown = ct.CTkOptionMenu(master = settingsWindow, fg_color = "#FF2400", dropdown_fg_color = "#FF2400", dropdown_hover_color = "#BA1B01", text_color = "#B4B4B4", dropdown_text_color = "#B4B4B4", button_hover_color = "#BA1B01", button_color = "#BA1B01", values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.model_choice) # Creates choices for the dropdown menu
+        self.model_dropdown = ct.CTkOptionMenu(master = settingsWindow, fg_color = "#EA2100", dropdown_fg_color = "#EA2100", dropdown_hover_color = "#BA1B01", text_color = "#000000", dropdown_text_color = "#000000", button_hover_color = "#BA1B01", button_color = "#BA1B01", values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.model_choice) # Creates choices for the dropdown menu
         self.model_dropdown.pack(side=ct.TOP, pady=10) # Places the dropdown at a location within the window
 
         settingsWindow.mainloop()
