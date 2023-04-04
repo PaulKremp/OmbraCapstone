@@ -1,5 +1,5 @@
 from utils import EmbeddingGen, FaceDetect, Recognizer
-
+import RainFilter
 
 
 import cv2
@@ -14,7 +14,7 @@ def main():
     recognizerBackend = "VGG-Face"
     faceDetectorBackend = "opencv"
 
-    EmbeddingGen("./db", recognizerBackend).refreshPKL(faceDetectorBackend)
+    #EmbeddingGen("./db", recognizerBackend).refreshPKL(faceDetectorBackend)
 
     embeddings = EmbeddingGen(
         "./db", recognizerBackend).outputEmbeddings(faceDetectorBackend)
@@ -33,7 +33,7 @@ def main():
     while 1:
         start_time = time.time()
         ret, img = cap.read()
-    
+        img = RainFilter.add_rain(img)
         if not ret:
             break
         faces = faceDetector.detectFaces(img)

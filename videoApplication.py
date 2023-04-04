@@ -11,7 +11,6 @@ from FacialRecognition.utils import Recognizer
 from FacialRecognition.utils import EmbeddingGen
 from FacialRecognition.utils import FaceDetect 
 
-
 class Video_Capture:
         
     def __init__(self, video_source):
@@ -32,7 +31,7 @@ class Video_Capture:
         if self.vid.isOpened():
             self.vid.release()
         self.window.mainloop()
-        
+
 
     def get_frame(self): 
          # Create directories for recognizedFaces and unrecognizedFaces
@@ -61,15 +60,16 @@ class Video_Capture:
           
 
 class App:
-    def __init__(self, window, window_title, video_source):
-        self.window = window # Creates CTk Root Window
-        self.window.title(window_title) # Adds a title to the top of the window
-        self.video_source = video_source # Sets video source variable
+    def __init__(self, video_source):
+        self.window = ct.CTk() # Creates CTk Root Window
+        self.window.title("Live Camera Feed") # Adds a title to the top of the window
         self.window.appearance = ct.set_appearance_mode('dark') # Sets appearance of window to dark mode
+        
+        self.video_source = video_source # Sets video source variable
         
         self.vid = Video_Capture(video_source) # Open Video Source
 
-        self.canvas = ct.CTkCanvas(window, width = 1280, height = 720, bg ='black', highlightthickness = 0) # Creates a canvas with dimensions of 720p for the camera
+        self.canvas = ct.CTkCanvas(self.window, width = 1280, height = 720, bg ='black', highlightthickness = 0) # Creates a canvas with dimensions of 720p for the camera
         self.canvas.pack(side=ct.LEFT) 
 
         self.delay = 17 # Sets delay to 17ms (nearly 60 Frames Per Second)
@@ -77,26 +77,28 @@ class App:
 
         self.screenshot() # Creates functional screenshot button
 
-        #self.settings() 
-        self.menus() # Creates the option menus
+        self.settings() 
+        #self.menus() # Creates the option menus
 
         self.window.mainloop() # Starts the CTk Window
 
     def menus(self):
-        # self.settings_window = Toplevel(self.window)
-        # self.settings_window.geometry("400x200")
-        # self.settings_window.title('Settings')
-        # self.settings_canvas = ct.CTkCanvas(self.settings_window, width = 400, height = 200, bg = 'black', highlightthickness = 0)
+        self.settings_window = ct.CTkToplevel()
+        self.settings_window.geometry("400x200")
+        self.settings_window.title('Settings')
+        self.settings_canvas = ct.CTkCanvas(self.settings_window, width = 400, height = 200, bg = 'black', highlightthickness = 0)
         self.backend_choice = ct.StringVar(value='Choose a Backend') # Sets an initial value for the dropdown menu
-        self.window.backend_dropdown = ct.CTkOptionMenu(master = self.window, values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backend_choice) # Creates choices for the dropdown menu
-        self.window.backend_dropdown.pack(side = ct.TOP, padx = 5, pady = 20) # Places the dropdown at a location within the window
+        self.backend_dropdown = ct.CTkOptionMenu(master = self.settings_window, values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backend_choice) # Creates choices for the dropdown menu
+        self.backend_dropdown.pack(side = ct.TOP, padx = 5, pady = 20) # Places the dropdown at a location within the window
 
         self.model_choice = ct.StringVar(value='Choose a Model') # Sets an initial value for the dropdown menu
-        self.window.model_dropdown = ct.CTkOptionMenu(master = self.window, values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.model_choice) # Creates choices for the dropdown menu
-        self.window.model_dropdown.pack(side=ct.TOP, pady=10) # Places the dropdown at a location within the window
+        self.model_dropdown = ct.CTkOptionMenu(master = self.settings_window, values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.model_choice) # Creates choices for the dropdown menu
+        self.model_dropdown.pack(side=ct.TOP, pady=10) # Places the dropdown at a location within the window
 
-    # def settings(self):
-    #     self.settings_button = ct.CTkButton(master = self.window, width = 150, height = 150, text = 'Settings', command = self.menus()).pack(side = TOP, pady = 5)
+    def settings(self):
+        self.settings_button = ct.CTkButton(master = self.window, width = 150, height = 150, text = 'Settings', command = self.menus())
+        self.settings_button.bind("<Button>", lambda e: self.menus())
+        self.settings_button.pack(side = TOP, pady = 5)
 
     def update(self):
         ret, frame = self.vid.get_frame() # Snapshots the current frame from the camera feed
