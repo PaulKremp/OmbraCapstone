@@ -22,7 +22,7 @@ def main():
     faceRecognizer = Recognizer(
         recognizerBackend, embeddings, faceDetectorBackend)
 
-    cap = cv2.VideoCapture(0) #'rtsp://admin:sLUx5%23!!@192.168.0.51:554/cam/realmonitor?channel=1&subtype=00&authbasic=YWRtaW46c0xVeDUlMjMhIQ==')
+    cap = cv2.VideoCapture(0)
 
     # Create directories for recognizedFaces and unrecognizedFaces
     if not os.path.exists("captureImages/recognizedFaces"):
