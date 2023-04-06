@@ -13,8 +13,9 @@ from FacialRecognition.utils import FaceDetect
 class Video_Capture:
     def __init__(self, video_source):
         self.vid = cv2.VideoCapture(video_source) # Takes in the video source as a variable
-        self.recognizerBackend = "VGG-Face"
-        self.faceDetectorBackend = "opencv"
+
+        self.recognizerBackend = recognizerOptionGlobal
+        self.faceDetectorBackend = backendOptionGlobal
 
         self.embeddings = EmbeddingGen("./db", self.recognizerBackend).outputEmbeddings(self.faceDetectorBackend)
         self.faceDetector = FaceDetect(self.faceDetectorBackend)
@@ -53,6 +54,15 @@ class App():
         self.window = ct.CTk()
         self.window.title("Live Camera Feed")
         self.window.appearance = ct.set_appearance_mode("dark")
+        self.video_source = video_source
+        self.recognizerOption = ct.StringVar(value = "VGG-Face")
+        self.backendOption = ct.StringVar(value = "opencv")
+
+        global recognizerOptionGlobal
+        global backendOptionGlobal
+
+        recognizerOptionGlobal = self.recognizerOption.get()
+        backendOptionGlobal = self.backendOption.get()
 
         self.vid = Video_Capture(video_source)
 
@@ -85,22 +95,30 @@ class App():
         self.settingsWindow.attributes("-topmost", True)
         self.settingsWindow.geometry('300x200')
         self.settingsWindow.title("Settings")
-        self.recognizerOption = ct.StringVar(value = self.vid.recognizerBackend)
-        self.backendOption = ct.StringVar(value = self.vid.faceDetectorBackend)
+
+        global recognizerOptionGlobal
+        global backendOptionGlobal
 
         self.backend_dropdown = ct.CTkOptionMenu(master = self.settingsWindow, fg_color = "#EA2100", dropdown_fg_color = "#EA2100", dropdown_hover_color = "#BA1B01", text_color = "#000000", dropdown_text_color = "#000000", button_hover_color = "#BA1B01", button_color = "#BA1B01", values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backendOption) # Creates choices for the dropdown menu
         self.backend_dropdown.pack(side = ct.TOP, padx = 5, pady = 20) # Places the dropdown at a location within the window
 
-        self.model_dropdown = ct.CTkOptionMenu(master = self.settingsWindow, fg_color = "#EA2100", dropdown_fg_color = "#EA2100", dropdown_hover_color = "#BA1B01", text_color = "#000000", dropdown_text_color = "#000000", button_hover_color = "#BA1B01", button_color = "#BA1B01", values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.recognizerOption) # Creates choices for the dropdown menu
-        self.model_dropdown.pack(side=ct.TOP, pady=10) # Places the dropdown at a location within the window
+        self.recognizer_dropdown = ct.CTkOptionMenu(master = self.settingsWindow, fg_color = "#EA2100", dropdown_fg_color = "#EA2100", dropdown_hover_color = "#BA1B01", text_color = "#000000", dropdown_text_color = "#000000", button_hover_color = "#BA1B01", button_color = "#BA1B01", values = ['VGG-Face', 'Facenet', 'Facenet512', 'OpenFace', 'DeepFace', 'DeepID', 'ArcFace', 'Dlib', 'SFace'], variable = self.recognizerOption) # Creates choices for the dropdown menu
+        self.recognizer_dropdown.pack(side=ct.TOP, pady=10) # Places the dropdown at a location within the window
 
-        self.done_button = ct.CTkButton(master = self.settingsWindow, fg_color = "#EA2100", hover_color = "#BA1B01", text_color = "#000000", width = 10, height = 10, text = "Done", command = self.refreshSettings).pack(side = ct.BOTTOM, padx = 5, pady = 10)
+        self.confirm_button = ct.CTkButton(master = self.settingsWindow, fg_color = "#EA2100", hover_color = "#BA1B01", text_color = "#000000", width = 10, height = 10, text = "Confirm", command = self.updateSettings).pack(side = ct.BOTTOM, padx = 5, pady = 10)
         self.settingsWindow.mainloop()
 
-    def refreshSettings(self):
-        self.settingsWindow.destroy()
+    def updateSettings(self):
+        global recognizerOptionGlobal
+        global backendOptionGlobal
 
-        
+        recognizerOptionGlobal = self.recognizerOption.get()
+        backendOptionGlobal = self.backendOption.get()
+
+        self.settingsWindow.destroy()
+        Video_Capture.__init__
+
+
 videoSource = 0
 #videoSource = 'rtsp://admin:sLUx5%23!!@192.168.40.42:554/cam/realmonitor?channel=1&subtype=0'
 App(videoSource)
