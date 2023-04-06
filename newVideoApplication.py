@@ -96,9 +96,6 @@ class App():
         self.settingsWindow.geometry('300x200')
         self.settingsWindow.title("Settings")
 
-        global recognizerOptionGlobal
-        global backendOptionGlobal
-
         self.backend_dropdown = ct.CTkOptionMenu(master = self.settingsWindow, fg_color = "#EA2100", dropdown_fg_color = "#EA2100", dropdown_hover_color = "#BA1B01", text_color = "#000000", dropdown_text_color = "#000000", button_hover_color = "#BA1B01", button_color = "#BA1B01", values = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe'], variable = self.backendOption) # Creates choices for the dropdown menu
         self.backend_dropdown.pack(side = ct.TOP, padx = 5, pady = 20) # Places the dropdown at a location within the window
 
@@ -116,7 +113,7 @@ class App():
         backendOptionGlobal = self.backendOption.get()
 
         self.settingsWindow.destroy()
-        Video_Capture.__init__
+        self.vid.__init__()
 
 
 videoSource = 0
