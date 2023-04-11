@@ -17,6 +17,8 @@ class Video_Capture:
         self.recognizerBackend = recognizerOptionGlobal
         self.faceDetectorBackend = backendOptionGlobal
 
+        print("This is the model: " + self.recognizerBackend + " This is the backend: " + self.faceDetectorBackend)
+
         self.embeddings = EmbeddingGen("./db", self.recognizerBackend).outputEmbeddings(self.faceDetectorBackend)
         self.faceDetector = FaceDetect(self.faceDetectorBackend)
         self.faceRecognizer = Recognizer(self.recognizerBackend, self.embeddings, self.faceDetectorBackend)
@@ -25,6 +27,23 @@ class Video_Capture:
         if not self.vid.isOpened(): # Checks if the video feed is available
             print("Camera Feed Unavailable")
             exit()       
+
+    def get_faces(self, video_source):
+        self.vid = cv2.VideoCapture(video_source) # Takes in the video source as a variable
+
+        self.recognizerBackend = recognizerOptionGlobal
+        self.faceDetectorBackend = backendOptionGlobal
+
+        print("This is the model: " + self.recognizerBackend + " This is the backend: " + self.faceDetectorBackend)
+
+        self.embeddings = EmbeddingGen("./db", self.recognizerBackend).outputEmbeddings(self.faceDetectorBackend)
+        self.faceDetector = FaceDetect(self.faceDetectorBackend)
+        self.faceRecognizer = Recognizer(self.recognizerBackend, self.embeddings, self.faceDetectorBackend)
+        
+        self.Q = queue.Queue()
+        if not self.vid.isOpened(): # Checks if the video feed is available
+            print("Camera Feed Unavailable")
+            exit()      
 
     def get_frame(self): 
 
@@ -113,7 +132,7 @@ class App():
         backendOptionGlobal = self.backendOption.get()
 
         self.settingsWindow.destroy()
-        self.vid.__init__()
+        self.vid.get_faces(self.video_source)
 
 
 videoSource = 0
