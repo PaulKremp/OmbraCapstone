@@ -109,7 +109,8 @@ class App():
 
     def takeScreenshot(self):
         ret, frame = self.vid.get_frame()
-        image_path = "C:/Users/Christian Staib/Pictures/TestScreenshots"
+        directory_path = os.path.expanduser('~')
+        image_path = f"{directory_path}/Pictures"
         timestamp = datetime.datetime.now().strftime("%m-%d-%Y, %H-%M-%S")
         if ret:
             frame = Image.fromarray(frame).resize((1280,720)).save(f"{image_path}/{timestamp}.jpg")
