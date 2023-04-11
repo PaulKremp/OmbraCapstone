@@ -9,6 +9,7 @@ from PIL import ImageTk
 from FacialRecognition.utils import Recognizer 
 from FacialRecognition.utils import EmbeddingGen
 from FacialRecognition.utils import FaceDetect 
+import datetime
 
 class Video_Capture:
     def __init__(self, video_source):
@@ -107,7 +108,11 @@ class App():
         self.window.after(self.delay, self.update) # Updates the image every 'self.delay' ms
 
     def takeScreenshot(self):
-        print("Screenshot")
+        ret, frame = self.vid.get_frame()
+        image_path = "C:/Users/Christian Staib/Pictures/TestScreenshots"
+        timestamp = datetime.datetime.now().strftime("%m-%d-%Y, %H-%M-%S")
+        if ret:
+            frame = Image.fromarray(frame).resize((1280,720)).save(f"{image_path}/{timestamp}.jpg")
 
     def openSettings(self):
         self.settingsWindow = ct.CTkToplevel(self.window)
