@@ -21,7 +21,7 @@ hands = mphands.Hands()
 
 
 # For webcam input:
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(r'C:\Users\izzyg\OneDrive - The Ohio State University\Desktop\OmbraCapstone\Video6IR.mp4')
 with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence=0.5) as face_detection:
     while cap.isOpened():
         success, image = cap.read()
